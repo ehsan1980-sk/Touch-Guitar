@@ -106,29 +106,31 @@ void setup() {
   pinMode(A5, INPUT);
 }
 
-//wave.volume = 4. The volume can be set from 0 to 12. A volume value of 0 is maximum, and 12 is silence. Anything higher than 12 will be the same as 12.
+//THIS IS WHERE THE MAGIC HAPPENS
 
-int volumeval = 12; //off
+
+// The volume can be set from 0 to 12. A volume value of 0 is maximum, and 12 is silence. Anything higher than 12 will be the same as 12.
+
+int volumeval = 12; // This means the volume is on its lowest point. You hear nothing. 
 
 long oldmillis = 0;
-int volumedelay = 200;
+int volumedelay = 200; //This is where you define how long the WAV-file keeps playing before it fades out again.
 
 void loop() {
-  //int buttonState = digitalRead(A5);
 
   uint8_t touched = cap.touched();
 
-  if (touched == 0) {
+  if (touched == 0) { //If a string is NOT touched, then decrease volume
     if (millis() > oldmillis + volumedelay && volumeval < 12)
     {
-      volumeval++; //zet dus zachter
+      volumeval++; //This decreases the volume. The logic is a little strange, but the higher this variable is, the softer the sound is.
       oldmillis = millis();
     }
   }
 
 
   for (uint8_t i = 0; i < 8; i++) {
-    if (touched & (1 << i)) {
+    if (touched & (1 << i)) { //If a string is touched, then max volume.
       volumeval = 0;
       oldmillis = millis();
     }
@@ -138,31 +140,13 @@ void loop() {
 
   if (!wave.isplaying)
   {
-    playfile("NONSTOP.WAV");
+    playfile("NONSTOP.WAV"); //REPLACE NONSTOP.WAV WITH THE NAME OF YOUR FILE. 
   }
 
   wave.volume = volumeval;
 
-  //  if (buttonState == HIGH)
-  //  {
-  //    volumeval = 0;
-  //    oldmillis = millis();
-  //  }
-  //  else
-  //  {
-  //    if (millis() > oldmillis + volumedelay && volumeval < 12)
-  //    {
-  //      volumeval++; //zet dus zachter
-  //      oldmillis = millis();
-  //    }
-  //  }
-  //
-  //  if (!wave.isplaying)
-  //  {
-  //    playfile("NONSTOP.WAV");
-  //  }
-  //
-  //  wave.volume = volumeval;
+  //END OF THE MAGIC. You're done here!
+  
 }
 
 void playfile(char *name) {
